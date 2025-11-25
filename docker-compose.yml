@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - WORKFLOW_ID=${WORKFLOW_ID}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "81:80"
+    depends_on:
+      - backend

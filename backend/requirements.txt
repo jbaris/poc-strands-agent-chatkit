@@ -1,0 +1,4 @@
+uvicorn[standard]==0.37
+fastapi==0.116
+openai-chatkit==1.1.0
+strands-agents==1.17.0
