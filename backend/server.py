@@ -26,6 +26,11 @@ app.add_middleware(
 data_store = MemoryStore()
 server = MyChatKitServer(data_store)
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+
 @app.post("/api/chatkit/session")
 def create_chatkit_session():
     return {"client_secret": "none"}
