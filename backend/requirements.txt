@@ -2,3 +2,5 @@ uvicorn[standard]==0.37
 fastapi==0.116
 openai-chatkit==1.1.0
 strands-agents==1.17.0
+strands-agents-tools==0.2.16
+strands-agents[otel]==1.17.0

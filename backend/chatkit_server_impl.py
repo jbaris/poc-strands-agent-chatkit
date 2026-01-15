@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 from typing import Any, AsyncIterator
 
@@ -21,6 +20,29 @@ from chatkit.types import (
 
 from strands import Agent
 from strands.models.openai import OpenAIModel
+
+import base64
+import os
+import logging
+
+# Enables Strands debug log level
+logging.getLogger("strands").setLevel(logging.DEBUG)
+logging.basicConfig(
+    format="%(levelname)s | %(name)s | %(message)s",
+    handlers=[logging.StreamHandler()]
+)
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+# This builds the Basic Auth header required for the OTLP endpoint
+LANGFUSE_AUTH = base64.b64encode(
+    f"{os.environ.get('LANGFUSE_PUBLIC_KEY')}:{os.environ.get('LANGFUSE_SECRET_KEY')}".encode()
+).decode()
+os.environ["OTEL_EXPORTER_OTLP_HEADERS"] = f"Authorization=Basic {LANGFUSE_AUTH}"
+
+# Enables telemetry with OTLP exporter
+from strands.telemetry import StrandsTelemetry
+strands_telemetry = StrandsTelemetry()
+strands_telemetry.setup_otlp_exporter()
 
 class MyChatKitServer(ChatKitServer):
     def __init__(

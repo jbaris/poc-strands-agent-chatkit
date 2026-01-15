@@ -1,13 +1,18 @@
 version: '3.8'
 
 services:
+
   backend:
     build: ./backend
     ports:
       - "3001:3000"
     environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - WORKFLOW_ID=${WORKFLOW_ID}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      LANGFUSE_SECRET_KEY: sk-lf-123456
+      LANGFUSE_PUBLIC_KEY: pk-lf-123456
+      LANGFUSE_BASE_URL: http://host.docker.internal:3000
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:3000/api/public/otel
+ 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       start_period: 10s
@@ -21,3 +26,10 @@ services:
       - "81:80"
     depends_on:
       - backend
+
+  langfuse-dind:
+    build:
+        context: ./langfuse
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
